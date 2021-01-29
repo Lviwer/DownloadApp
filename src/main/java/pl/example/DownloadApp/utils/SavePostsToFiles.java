@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class SavePostsToFiles {
 
     public void savePostsToFiles(List<Post> postList, String folderName) {
 
+        folderName = validateFolderName(folderName);
         createNewFolder(folderName);
 
         String fileName;
@@ -38,7 +41,8 @@ public class SavePostsToFiles {
 
 
     public void savePostToFile(Post post, String folderName) {
-
+        
+        folderName = validateFolderName(folderName);
         createNewFolder(folderName);
         ObjectMapper mapper = new ObjectMapper();
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
@@ -56,5 +60,13 @@ public class SavePostsToFiles {
         new File(folderName).mkdirs();
     }
 
+    private String validateFolderName(String folderName) {
+        Pattern pattern = Pattern.compile("^A-Za-z0-9") ; // to exclude: ("\\/?%*:|\"<>")
+        Matcher match = pattern.matcher(folderName);
+
+        if (!match.find()) {
+            return "DefaultNameForIncorrectParameterInput";
+        } else return folderName;
+    }
 
 }
