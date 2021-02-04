@@ -59,9 +59,10 @@ public class SavePostsToFiles {
     private void createNewFolder(String folderName) {
         new File(folderName).mkdirs();
     }
-//If the first letter is correct folder name will be cutter to first incorrect sign
+
+    //If the first letter is correct folder name will be cutter to first incorrect sign
     private String validateFolderName(String folderName) {
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_.-]*$") ; // to exclude: ("\\/?%*:|\"<>")
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_.-]*$"); // to exclude: ("\\/?%*:|\"<>")
         Matcher match = pattern.matcher(folderName);
 
         if (!match.find()) {
