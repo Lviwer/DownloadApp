@@ -2,36 +2,44 @@ package pl.example.DownloadApp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import pl.example.DownloadApp.model.Comment;
 import pl.example.DownloadApp.model.Post;
-import pl.example.DownloadApp.utils.SavePostsToFiles;
-import pl.example.DownloadApp.webclient.PostClient;
+import pl.example.DownloadApp.SaveToFiles;
+import pl.example.DownloadApp.webclient.ClientHttp;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostClient postClient;
-    private final SavePostsToFiles savePostsToFiles;
+
+
+    private final ClientHttp clientHttp;
+    private final SaveToFiles saveToFiles;
 
     public List<Post> getPostList() {
-        return postClient.getPosts();
-    }
-
-    public Post getSinglePost(Integer id) throws HttpClientErrorException {
-        return postClient.getPost(id);
-    }
-
-    public void getAndSavePostToFolder(int postID, String folderName) throws HttpClientErrorException {
-        savePostsToFiles.savePostToFile(postClient.getPost(postID), folderName);
+        return clientHttp.getPosts();
     }
 
 
-    public void getAndSaveAllPostsToFolder(String folderName) {
-        savePostsToFiles.savePostsToFiles(postClient.getPosts(), folderName);
+    public void saveAllPosts(String folderName) {
+        saveToFiles.savePostsToFiles(clientHttp.getPosts(), folderName);
     }
 
+
+    public void saveCommentsGroupedByDomain(int postCount, String folderToSaveName) {
+
+        List<Post> postList = clientHttp.getPosts();
+        Stream<Post> postStream = postList.stream().limit(postCount);
+        Stream<Comment> commentStream = postStream.flatMap(p -> clientHttp.getCommentsByPost(p.getId()).stream());
+        Map<String, List<Comment>> commentsGroupedByDomain = commentStream.collect(Collectors.groupingBy(comment ->
+                comment.getEmail().substring(comment.getEmail().indexOf("@") + 1)));
+
+        saveToFiles.saveCommentsToFiles(commentsGroupedByDomain, folderToSaveName);
+    }
 
 }

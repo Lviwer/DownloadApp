@@ -10,6 +10,12 @@ import lombok.Setter;
 
 public class Post {
 
+    private Integer userId;
+    private Integer id;
+    private String title;
+    private String body;
+
+
     public Post() {
     }
 
@@ -20,10 +26,13 @@ public class Post {
         this.body = body;
     }
 
-    private Integer userId;
-    private Integer id;
-    private String title;
-    private String body;
-
-
+    @Override
+    public String toString() {
+        return "Post{" +
+                "userId=" + userId +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                '}';
+    }
 }
