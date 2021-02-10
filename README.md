@@ -1,15 +1,11 @@
-# DownloadApp
-Simple API to connect with other API and save files
+DownloadApp
 
+API to connect and download JSON files from: "https://jsonplaceholder.typicode.com"
 
-To get and show posts:
-- http://localhost:8080/posts
-- http://localhost:8080/posts/{id}
+To save posts to folder with given name:
 
-To get and save posts:
-- http://localhost:8080/download/posts/{id}
-- http://localhost:8080/download/posts
+    http://localhost:8080/posts?folder=folderName (posts are save with postId as name)
 
-To save to folder with name: 
-- http://localhost:8080/download/posts?folder=FolderName
-- http://localhost:8080/download/posts?folder=FolderName
+To save comments from first n posts and save to folder with given name:
+
+    http://localhost:8080/comments?howMany=10&folder=folderName (comments are save with domain as name)

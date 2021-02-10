@@ -1,5 +1,7 @@
 package pl.example.DownloadApp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.example.DownloadApp.model.Comment;
@@ -17,7 +19,6 @@ import java.util.regex.Pattern;
 @Component
 @RequiredArgsConstructor
 public class SaveToFiles {
-//TODO ADD PRETTY PRINTING
 
     public void saveCommentsToFiles(Map<String, List<Comment>> commentsGroupedByDomain, String folderName) {
 
@@ -27,8 +28,8 @@ public class SaveToFiles {
 
         commentsGroupedByDomain.forEach((domain, files) -> {
             files.forEach(comment -> {
-                try {
-                    Files.writeString(Path.of(finalFolderName + "\\" + domain.toString().replace(".", "") + ".json"), comment.toString());
+                try {                                                                //TODO IF YOU WANT WITHOUT DOT ADD -> .replace(".", "") ***************
+                    Files.writeString(Path.of(finalFolderName + "\\" + domain.toString() + ".json"), mapperToPrettyPrinterJson(comment));
                 } catch (IOException e) {
                     System.out.println("There is some problem with saving files");
                     e.printStackTrace();
@@ -48,7 +49,7 @@ public class SaveToFiles {
         for (Post p : postList) {
             try {
                 fileName = p.getId().toString();
-                Files.writeString(Path.of(folderName + "/" + fileName + ".json"), p.toString());
+                Files.writeString(Path.of(folderName + "/" + fileName + ".json"), mapperToPrettyPrinterJson(p));
 
             } catch (IOException e) {
                 System.out.println("There is some problem with saving files");
@@ -72,5 +73,12 @@ public class SaveToFiles {
             return "DefaultNameForIncorrectParameterInput";
         } else return folderName;
     }
+
+
+    private String mapperToPrettyPrinterJson(Object object) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    }
+
 
 }

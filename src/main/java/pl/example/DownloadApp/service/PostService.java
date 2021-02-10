@@ -17,13 +17,8 @@ import java.util.stream.Stream;
 public class PostService {
 
 
-
     private final ClientHttp clientHttp;
     private final SaveToFiles saveToFiles;
-
-    public List<Post> getPostList() {
-        return clientHttp.getPosts();
-    }
 
 
     public void saveAllPosts(String folderName) {
